@@ -3,24 +3,24 @@ import { EntityProps } from './props';
 import { ApiProperty } from '@nestjs/swagger';
 
 export abstract class Entity<T extends EntityProps> {
-  @ApiProperty({ nullable: true })
-  public _uuid?: string;
-  public readonly props: T;
+  @ApiProperty()
+  protected uuid: string;
+  protected props: T = {} as T;
 
-  constructor(props: T, uuid?: string) {
+  protected create(props: T, uuid?: string) {
     Object.assign(this.props, props);
 
     if (!uuid) {
-      this._uuid = randomUUID();
+      this.uuid = randomUUID();
       return;
     }
-    this._uuid = uuid;
+    this.uuid = uuid;
   }
 
   public toValue() {
     return {
-      _uuid: this._uuid,
       ...this.props,
+      uuid: this.uuid,
     };
   }
 }
